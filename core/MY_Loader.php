@@ -10,7 +10,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @author      Gregory CARRODANO <g.carrodano@gmail.com>
  * @version     20161101
  */
-class MY_Loader
+class MY_Loader extends CI_Loader
 {
     /**
      * Class constructor
@@ -43,7 +43,7 @@ class MY_Loader
         }
 
         // Fetches our custom DB loading function (which will actually use our own DB_driver and DB_query_builder rather than CI ones)
-        require_once(APPATH.'third_party/db-driver/database/MY_DB.php');
+        require_once(APPPATH.'third_party/db-driver/database/MY_DB.php');
 
         if ($return === true) {
             return DB($params, $query_builder);
