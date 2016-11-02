@@ -1,8 +1,8 @@
 {
-    "name": "gccloud/db-builder",
+    "name": "gccloud/db-driver",
     "keywords": ["Database", "driver", "query builder", "codeigniter"],
     "description": "CodeIgniter 3 Database Driver extension",
-    "homepage": "https://github.com/gccloud/db-builder",
+    "homepage": "https://github.com/gccloud/db-driver",
     "license": "Apache-2.0",
     "type": "codeigniter-third-party",
     "authors": [
@@ -17,6 +17,6 @@
         "composer/installers": "1.0.*"
     },
     "extra": {
-        "installer-name": "db-builder"
+        "installer-name": "db-driver"
     }
 }
