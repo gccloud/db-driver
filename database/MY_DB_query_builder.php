@@ -50,7 +50,6 @@ abstract class MY_DB_query_builder extends MY_DB_driver
 
     /**
      * Get INSERT IGNORE query string
-     *
      * @param  string
      * @param  bool
      * @return string
@@ -75,7 +74,7 @@ abstract class MY_DB_query_builder extends MY_DB_driver
     }
 
     /**
-     * Insert
+     * INSERT IGNORE
      * @param  string
      * @param  array
      * @param  bool
@@ -102,7 +101,7 @@ abstract class MY_DB_query_builder extends MY_DB_driver
     }
 
     /**
-     * Get UPDATE query string
+     * Get UPDATE IGNORE query string
      * @param  string
      * @param  bool
      * @return string
@@ -126,7 +125,7 @@ abstract class MY_DB_query_builder extends MY_DB_driver
     }
 
     /**
-     * UPDATE
+     * UPDATE IGNORE
      * @param  string
      * @param  array
      * @param  mixed
