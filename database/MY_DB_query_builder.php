@@ -1,4 +1,5 @@
 <?php
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
@@ -10,7 +11,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @author      Gregory CARRODANO <g.carrodano@gmail.com>
  * @version     20161101
  */
-abstract class MY_DB_query_builder extends MY_DB_driver
+abstract class MY_DB_query_builder extends CI_DB_query_builder
 {
     /**
      * "Count All Results" query
@@ -26,16 +27,16 @@ abstract class MY_DB_query_builder extends MY_DB_driver
         }
 
         // ORDER BY usage is often problematic here (most notably on Microsoft SQL Server) and ultimately unnecessary for selecting COUNT(*) ...
-        if ( ! empty($this->qb_orderby)) {
+        if (!empty($this->qb_orderby)) {
             $orderby = $this->qb_orderby;
             $this->qb_orderby = null;
         }
 
-        $result = ($this->qb_distinct === true) ? $this->query($this->_count_string.$this->protect_identifiers('numrows')."\nFROM (\n".$this->_compile_select()."\n) CI_count_all_results") : $this->query($this->_compile_select($this->_count_string.$this->protect_identifiers('numrows')));
+        $result = ($this->qb_distinct === true) ? $this->query($this->_count_string . $this->protect_identifiers('numrows') . "\nFROM (\n" . $this->_compile_select() . "\n) CI_count_all_results") : $this->query($this->_compile_select($this->_count_string . $this->protect_identifiers('numrows')));
 
         if ($reset === true) {
             $this->_reset_select();
-        } elseif ( ! isset($this->qb_orderby)) {
+        } elseif (!isset($this->qb_orderby)) {
             // If we've previously reset the qb_orderby values, get them back
             $this->qb_orderby = $orderby;
         }
@@ -61,9 +62,7 @@ abstract class MY_DB_query_builder extends MY_DB_driver
         }
 
         $sql = $this->_insert_ignore(
-            $this->protect_identifiers( $this->qb_from[0], true, null, false),
-            array_keys($this->qb_set),
-            array_values($this->qb_set)
+                $this->protect_identifiers($this->qb_from[0], true, null, false), array_keys($this->qb_set), array_values($this->qb_set)
         );
 
         if ($reset === true) {
@@ -91,9 +90,7 @@ abstract class MY_DB_query_builder extends MY_DB_driver
         }
 
         $sql = $this->_insert_ignore(
-            $this->protect_identifiers($this->qb_from[0], true, $escape, false),
-            array_keys($this->qb_set),
-            array_values($this->qb_set)
+                $this->protect_identifiers($this->qb_from[0], true, $escape, false), array_keys($this->qb_set), array_values($this->qb_set)
         );
 
         $this->_reset_write();
@@ -149,13 +146,43 @@ abstract class MY_DB_query_builder extends MY_DB_driver
             $this->where($where);
         }
 
-        if ( ! empty($limit)) {
+        if (!empty($limit)) {
             $this->limit($limit);
         }
 
         $sql = $this->_update_ignore($this->qb_from[0], $this->qb_set);
         $this->_reset_write();
         return $this->query($sql);
+    }
+
+    /**
+     * Insert ignore statement
+     * @param  string
+     * @param  array
+     * @param  array
+     * @return string
+     */
+    protected function _insert_ignore($table, $keys, $values)
+    {
+        return 'INSERT IGNORE INTO ' . $table . ' (' . implode(', ', $keys) . ') VALUES (' . implode(', ', $values) . ')';
+    }
+
+    /**
+     * Update statement
+     * @param  string
+     * @param  array
+     * @return string
+     */
+    protected function _update_ignore($table, $values)
+    {
+        foreach ($values as $key => $val) {
+            $valstr[] = $key . ' = ' . $val;
+        }
+
+        return 'UPDATE IGNORE ' . $table . ' SET ' . implode(', ', $valstr)
+                . $this->_compile_wh('qb_where')
+                . $this->_compile_order_by()
+                . ($this->qb_limit ? ' LIMIT ' . $this->qb_limit : '');
     }
 
 }

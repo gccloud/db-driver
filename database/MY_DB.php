@@ -94,6 +94,7 @@ function &DB($params = '', $query_builder_override = null)
 
     if (! isset($query_builder) or $query_builder === true) {
         require_once(BASEPATH.'database/DB_query_builder.php');
+        require_once(APPPATH.'third_party/db-driver/database/MY_DB_query_builder.php');
         if (! class_exists('CI_DB', false)) {
             /**
              * CI_DB
@@ -103,17 +104,14 @@ function &DB($params = '', $query_builder_override = null)
              * @see    CI_DB_query_builder
              * @see    CI_DB_driver
              */
-            class CI_DB extends CI_DB_query_builder { }
+            class CI_DB extends MY_DB_query_builder { }
         }
     } elseif (! class_exists('CI_DB', false)) {
         /**
          * @ignore
          */
-        class CI_DB extends CI_DB_driver { }
-    }
-
-    require_once(APPPATH.'third_party/db-driver/database/MY_DB_driver.php');
-    require_once(APPPATH.'third_party/db-driver/database/MY_DB_query_builder.php');
+        class CI_DB extends MY_DB_driver { }
+    }    
 
     // Load the DB driver
     $driver_file = BASEPATH.'database/drivers/'.$params['dbdriver'].'/'.$params['dbdriver'].'_driver.php';
