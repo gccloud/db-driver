@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * Initialize the database
  * @method DB
- * @param  mixed[string|string[]]
+ * @param  mixed
  * @param  bool
  */
 function &DB($params = '', $query_builder_override = null)
@@ -41,7 +41,7 @@ function &DB($params = '', $query_builder_override = null)
 
         if (! isset($active_group)) {
             show_error('You have not specified a database connection group via $active_group in your config/database.php file.');
-        } elseif ( ! isset($db[$active_group])) {
+        } elseif (! isset($db[$active_group])) {
             show_error('You have specified an invalid database connection group ('.$active_group.') in your config/database.php file.');
         }
 
@@ -84,8 +84,7 @@ function &DB($params = '', $query_builder_override = null)
     // Load the DB classes. Note: Since the query builder class is optional we need to dynamically create a class that extends proper parent class based on whether we're using the query builder class or not.
     if ($query_builder_override !== null) {
         $query_builder = $query_builder_override;
-    }
-    // Backwards compatibility work-around for keeping the $active_record config variable working. Should be removed in v3.1
+    } // Backwards compatibility work-around for keeping the $active_record config variable working. Should be removed in v3.1
     elseif (! isset($query_builder) && isset($active_record)) {
         $query_builder = $active_record;
     }
@@ -104,14 +103,18 @@ function &DB($params = '', $query_builder_override = null)
              * @see    CI_DB_query_builder
              * @see    CI_DB_driver
              */
-            class CI_DB extends MY_DB_query_builder { }
+            class CI_DB extends MY_DB_query_builder
+            {
+            }
         }
     } elseif (! class_exists('CI_DB', false)) {
         /**
          * @ignore
          */
-        class CI_DB extends MY_DB_driver { }
-    }    
+        class CI_DB extends MY_DB_driver
+        {
+        }
+    }
 
     // Load the DB driver
     $driver_file = BASEPATH.'database/drivers/'.$params['dbdriver'].'/'.$params['dbdriver'].'_driver.php';
@@ -124,7 +127,7 @@ function &DB($params = '', $query_builder_override = null)
     $DB = new $driver($params);
 
     // Check for a subdriver
-    if ( ! empty($DB->subdriver)) {
+    if (! empty($DB->subdriver)) {
         $driver_file = BASEPATH.'database/drivers/'.$DB->dbdriver.'/subdrivers/'.$DB->dbdriver.'_'.$DB->subdriver.'_driver.php';
 
         if (file_exists($driver_file)) {

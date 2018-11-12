@@ -9,7 +9,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @package     CodeIgniter
  * @category    Core
  * @author      Gregory CARRODANO <g.carrodano@gmail.com>
- * @version     20161101
+ * @version     20171020
  */
 abstract class MY_DB_query_builder extends CI_DB_query_builder
 {
@@ -61,9 +61,7 @@ abstract class MY_DB_query_builder extends CI_DB_query_builder
             return false;
         }
 
-        $sql = $this->_insert_ignore(
-                $this->protect_identifiers($this->qb_from[0], true, null, false), array_keys($this->qb_set), array_values($this->qb_set)
-        );
+        $sql = $this->_insert_ignore($this->protect_identifiers($this->qb_from[0], true, null, false), array_keys($this->qb_set), array_values($this->qb_set));
 
         if ($reset === true) {
             $this->_reset_write();
@@ -89,8 +87,7 @@ abstract class MY_DB_query_builder extends CI_DB_query_builder
             return false;
         }
 
-        $sql = $this->_insert_ignore(
-                $this->protect_identifiers($this->qb_from[0], true, $escape, false), array_keys($this->qb_set), array_values($this->qb_set)
+        $sql = $this->_insert_ignore($this->protect_identifiers($this->qb_from[0], true, $escape, false), array_keys($this->qb_set), array_values($this->qb_set)
         );
 
         $this->_reset_write();
@@ -180,9 +177,8 @@ abstract class MY_DB_query_builder extends CI_DB_query_builder
         }
 
         return 'UPDATE IGNORE ' . $table . ' SET ' . implode(', ', $valstr)
-                . $this->_compile_wh('qb_where')
-                . $this->_compile_order_by()
-                . ($this->qb_limit ? ' LIMIT ' . $this->qb_limit : '');
+            . $this->_compile_wh('qb_where')
+            . $this->_compile_order_by()
+            . ($this->qb_limit ? ' LIMIT ' . $this->qb_limit : '');
     }
-
 }
