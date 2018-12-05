@@ -153,6 +153,76 @@ abstract class MY_DB_query_builder extends CI_DB_query_builder
     }
 
     /**
+     * Insert_Batch
+     *
+     * Compiles batch insert strings and runs the queries
+     *
+     * @param    string    $table    Table to insert into
+     * @param    array    $set     An associative array of insert values
+     * @param    bool    $escape    Whether to escape values and identifiers
+     * @return    int    Number of rows inserted or FALSE on failure
+     */
+    public function insert_ignore_batch($table, $set = NULL, $escape = NULL, $batch_size = 100)
+    {
+        if ($set === NULL)
+        {
+            if (empty($this->qb_set))
+            {
+                return ($this->db_debug) ? $this->display_error('db_must_use_set') : FALSE;
+            }
+        }
+        else
+        {
+            if (empty($set))
+            {
+                return ($this->db_debug) ? $this->display_error('insert_batch() called with no data') : FALSE;
+            }
+
+            $this->set_insert_batch($set, '', $escape);
+        }
+
+        if (strlen($table) === 0)
+        {
+            if ( ! isset($this->qb_from[0]))
+            {
+                return ($this->db_debug) ? $this->display_error('db_must_set_table') : FALSE;
+            }
+
+            $table = $this->qb_from[0];
+        }
+
+        // Batch this baby
+        $affected_rows = 0;
+        for ($i = 0, $total = count($this->qb_set); $i < $total; $i += $batch_size)
+        {
+            if ($this->query($this->_insert_ignore_batch($this->protect_identifiers($table, TRUE, $escape, FALSE), $this->qb_keys, array_slice($this->qb_set, $i, $batch_size))))
+            {
+                $affected_rows += $this->affected_rows();
+            }
+        }
+
+        $this->_reset_write();
+        return $affected_rows;
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Insert batch statement
+     *
+     * Generates a platform-specific insert string from the supplied data.
+     *
+     * @param    string    $table    Table name
+     * @param    array    $keys    INSERT keys
+     * @param    array    $values    INSERT values
+     * @return    string
+     */
+    protected function _insert_ignore_batch($table, $keys, $values)
+    {
+        return 'INSERT IGNORE INTO '.$table.' ('.implode(', ', $keys).') VALUES '.implode(', ', $values);
+    }
+
+    /**
      * Insert ignore statement
      * @param  string
      * @param  array
