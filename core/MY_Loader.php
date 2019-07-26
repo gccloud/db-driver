@@ -28,7 +28,7 @@ class MY_Loader extends CI_Loader
      * @param  bool
      * @return mixed
      */
-    public function database($params = '', $return = false, $query_builder = true)
+    public function database($params = '', $return = false, $query_builder = null)
     {
         // Grab CI super instance
         $CI =& get_instance();
