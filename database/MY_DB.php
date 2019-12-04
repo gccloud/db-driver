@@ -90,6 +90,7 @@ function &DB($params = '', $query_builder_override = null)
     }
 
     require_once(BASEPATH.'database/DB_driver.php');
+    require_once(APPPATH.'third_party/db-driver/database/MY_DB_driver.php');
 
     if (! isset($query_builder) or $query_builder === true) {
         require_once(BASEPATH.'database/DB_query_builder.php');
